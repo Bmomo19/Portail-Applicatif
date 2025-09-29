@@ -9,10 +9,13 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@types/nodemailer": "^7.0.1",
+    "antd": "^5.27.4",
     "axios": "^1.11.0",
     "lucide-react": "^0.541.0",
     "mysql2": "^3.14.3",
     "next": "15.5.0",
+    "nodemailer": "^7.0.6",
     "react": "19.1.0",
     "react-dom": "19.1.0"
   },

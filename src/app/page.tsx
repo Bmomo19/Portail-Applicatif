@@ -6,6 +6,9 @@ import { Application } from '@/types/application';
 import ApplicationCard from '@/app/component/ApplicationCard';
 import ScrollingMessages from '@/app/component/ScrollingMessages';
 import Image from 'next/image';
+import AssistanceCard from './component/AssistanceCard';
+import AssistanceModal from './component/AssistanceModal';
+
 
 const HomePage: React.FC = () => {
   const [applications, setApplications] = useState<Application[]>([]);
@@ -13,6 +16,7 @@ const HomePage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [showAssistanceModal, setShowAssistanceModal] = useState(false);
 
   const fetchApplications = async () => {
     setLoading(true);
@@ -167,6 +171,10 @@ const HomePage: React.FC = () => {
                 ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
                 : "space-y-4"
             }>
+              <AssistanceCard
+                onClick={() => setShowAssistanceModal(true)}
+                viewMode={viewMode}
+              />
               {filteredApplications.map((app) => (
                 <ApplicationCard
                   key={app.id}
@@ -187,6 +195,10 @@ const HomePage: React.FC = () => {
           </div>
         </div>
       </div>
+      <AssistanceModal
+        isOpen={showAssistanceModal}
+        onClose={() => setShowAssistanceModal(false)}
+      />
     </>
   );
 };
