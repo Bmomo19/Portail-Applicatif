@@ -85,15 +85,10 @@ export function generateAssistanceEmailHTML(demande: DemandeAssistance): string 
             ${demande.nom}
           </div>
           <div class="info-row">
-            <span class="label">Email:</span>
-            <a href="mailto:${demande.email}">${demande.email}</a>
+            <span class="label">Application concernée:</span>
+            <a href="${demande.app.applink}">${demande.app.appname}</a>
           </div>
-          ${demande.telephone ? `
-          <div class="info-row">
-            <span class="label">Téléphone:</span>
-            ${demande.telephone}
-          </div>
-          ` : ''}
+          
           <div class="info-row">
             <span class="label">Sujet:</span>
             <strong>${demande.sujet}</strong>

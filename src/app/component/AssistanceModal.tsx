@@ -1,8 +1,10 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { X, AlertCircle, CheckCircle, Loader, HelpCircle, AlertTriangle } from 'lucide-react';
 import { DemandeAssistance } from '@/types/assistance';
 import Modal from 'antd/es/modal/Modal';
+import { Application } from '@/types/application';
+import { fetchApplications } from '../services/ApplicationService';
 
 interface AssistanceModalProps {
     isOpen: boolean;
@@ -10,11 +12,11 @@ interface AssistanceModalProps {
 }
 
 const AssistanceModal: React.FC<AssistanceModalProps> = ({ isOpen, onClose }) => {
+    const [application, setApplication] = useState<Application[]>([]);
     const [formData, setFormData] = useState<DemandeAssistance>({
         type: 'assistance',
         nom: '',
-        email: '',
-        telephone: '',
+        app: { id: 0, appname: '', description: '', applink: '' },
         sujet: '',
         description: '',
         priorite: 'normale'
@@ -23,6 +25,10 @@ const AssistanceModal: React.FC<AssistanceModalProps> = ({ isOpen, onClose }) =>
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState(false);
+
+    useEffect(() => {        
+        fetchApplications(setLoading, setError, setApplication);
+    }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -59,8 +65,7 @@ const AssistanceModal: React.FC<AssistanceModalProps> = ({ isOpen, onClose }) =>
         setFormData({
             type: 'assistance',
             nom: '',
-            email: '',
-            telephone: '',
+            app: { id: 0, appname: '', description: '', applink: '' },
             sujet: '',
             description: '',
             priorite: 'normale'
@@ -87,7 +92,7 @@ const AssistanceModal: React.FC<AssistanceModalProps> = ({ isOpen, onClose }) =>
     return (
         <Modal open={isOpen} centered closeIcon={false} onCancel={handleClose} footer={() => <>
             <div className="flex justify-end space-x-4 pt-4">
-                <button type="submit" disabled={loading} className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg flex items-center space-x-2 transition-colors disabled:opacity-50">
+                <button onClick={handleSubmit} type="submit" disabled={loading} className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg flex items-center space-x-2 transition-colors disabled:opacity-50">
                     {loading ? (
                         <>
                             <Loader className="w-4 h-4 animate-spin" />
@@ -108,7 +113,7 @@ const AssistanceModal: React.FC<AssistanceModalProps> = ({ isOpen, onClose }) =>
                 <X className="w-6 h-6" />
             </button>
         </div>}>
-            <form onSubmit={handleSubmit} className="space-y-3">
+            <form className="space-y-3">
                 {error && (
                     <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg flex items-center">
                         <AlertCircle className="w-5 h-5 mr-2 flex-shrink-0" />
@@ -167,7 +172,7 @@ const AssistanceModal: React.FC<AssistanceModalProps> = ({ isOpen, onClose }) =>
                     <label className="block text-sm font-semibold text-gray-700 mb-2">
                         Nom complet *
                     </label>
-                    <input type="text" value={formData.nom} required
+                    <input type="text" value={formData.nom.toUpperCase()} required
                         onChange={(e) => setFormData({ ...formData, nom: e.target.value })}
                         className="w-full text-gray-800 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
                     />
@@ -176,12 +181,18 @@ const AssistanceModal: React.FC<AssistanceModalProps> = ({ isOpen, onClose }) =>
                 {/* Email */}
                 <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        Email *
+                        Application concernée *
                     </label>
-                    <input type="email" value={formData.email} required
-                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
-                    />
+                    <select value={JSON.stringify(formData.app)} required
+                        onChange={(e) => setFormData({ ...formData, app: JSON.parse(e.target.value)})}
+                        className="w-full text-gray-800 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                    >
+                        {
+                            application.map((app) => (
+                                <option key={app.id} value={JSON.stringify(app)}>{app.appname}</option>
+                            ))
+                        }
+                    </select>
                 </div>
 
                 {/* Sujet */}
@@ -205,8 +216,6 @@ const AssistanceModal: React.FC<AssistanceModalProps> = ({ isOpen, onClose }) =>
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none resize-none"
                     />
                 </div>
-
-
             </form>
         </Modal>
 

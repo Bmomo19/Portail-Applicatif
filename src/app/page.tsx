@@ -8,6 +8,7 @@ import ScrollingMessages from '@/app/component/ScrollingMessages';
 import Image from 'next/image';
 import AssistanceCard from './component/AssistanceCard';
 import AssistanceModal from './component/AssistanceModal';
+import { fetchApplications } from './services/ApplicationService';
 
 
 const HomePage: React.FC = () => {
@@ -18,33 +19,10 @@ const HomePage: React.FC = () => {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [showAssistanceModal, setShowAssistanceModal] = useState(false);
 
-  const fetchApplications = async () => {
-    setLoading(true);
-    setError(null);
 
-    try {
-      const response = await fetch('/api/applications');
-      if (!response.ok) {
-        throw new Error(`Erreur ${response.status}: ${response.statusText}`);
-      }
-      const data = await response.json();
-
-      if (Array.isArray(data)) {
-        setApplications(data);
-      } else {
-        throw new Error('Format de données invalide');
-      }
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Erreur inconnue';
-      setError(errorMessage);
-      console.error('Erreur lors du chargement des applications:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
-    fetchApplications();
+    fetchApplications(setLoading, setError, setApplications);
   }, []);
 
   const filteredApplications = applications.filter(app =>
@@ -146,11 +124,8 @@ const HomePage: React.FC = () => {
               </div>
 
               {/* Bouton refresh */}
-              <button
-                onClick={fetchApplications}
+              <button aria-label="Actualiser les applications" disabled={loading} onClick={()=>fetchApplications(setLoading, setError, setApplications)}
                 className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors disabled:opacity-50"
-                disabled={loading}
-                aria-label="Actualiser les applications"
               >
                 <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
                 <span>Actualiser</span>
