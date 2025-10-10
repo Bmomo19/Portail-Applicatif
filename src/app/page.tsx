@@ -1,15 +1,13 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
-import { RefreshCw, Search, Grid, List, AlertCircle, Loader } from 'lucide-react';
+import { RefreshCw, Search, Grid, List, AlertCircle, Loader, Star } from 'lucide-react';
 import { Application } from '@/types/application';
 import ApplicationCard from '@/app/component/ApplicationCard';
+import AssistanceCard from '@/app/component/AssistanceCard';
+import AssistanceModal from '@/app/component/AssistanceModal';
 import ScrollingMessages from '@/app/component/ScrollingMessages';
 import Image from 'next/image';
-import AssistanceCard from './component/AssistanceCard';
-import AssistanceModal from './component/AssistanceModal';
-import { fetchApplications } from './services/ApplicationService';
-
 
 const HomePage: React.FC = () => {
   const [applications, setApplications] = useState<Application[]>([]);
@@ -17,22 +15,91 @@ const HomePage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [favorites, setFavorites] = useState<number[]>([]);
   const [showAssistanceModal, setShowAssistanceModal] = useState(false);
+  const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
 
-
-
+  // Charger les favoris depuis localStorage au montage
   useEffect(() => {
-    fetchApplications(setLoading, setError, setApplications);
+    const savedFavorites = localStorage.getItem('app_favorites');
+    if (savedFavorites) {
+      try {
+        setFavorites(JSON.parse(savedFavorites));
+      } catch (e) {
+        console.error('Erreur lors du chargement des favoris:', e);
+      }
+    }
   }, []);
 
-  const filteredApplications = applications.filter(app =>
-    app.appname.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    app.description?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Sauvegarder les favoris dans localStorage à chaque changement
+  useEffect(() => {
+    localStorage.setItem('app_favorites', JSON.stringify(favorites));
+  }, [favorites]);
+
+  const fetchApplications = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch('/api/applications');
+      if (!response.ok) {
+        throw new Error(`Erreur ${response.status}: ${response.statusText}`);
+      }
+      const data = await response.json();
+
+      if (Array.isArray(data)) {
+        setApplications(data);
+      } else {
+        throw new Error('Format de données invalide');
+      }
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Erreur inconnue';
+      setError(errorMessage);
+      console.error('Erreur lors du chargement des applications:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchApplications();
+  }, []);
+
+  const toggleFavorite = (appId: number, event: React.MouseEvent) => {
+    event.stopPropagation(); // Empêcher l'ouverture de l'application
+    console.log('Toggle favorite for appId:', appId); // Debug
+    setFavorites(prev => {
+      const newFavorites = prev.includes(appId)
+        ? prev.filter(id => id !== appId)
+        : [...prev, appId];
+      console.log('Previous favorites:', prev); // Debug
+      console.log('New favorites:', newFavorites); // Debug
+      return newFavorites;
+    });
+  };
+
+  const filteredApplications = applications
+    .filter(app => {
+      const matchesSearch = app.appname.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        app.description?.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesFavoriteFilter = !showOnlyFavorites || favorites.includes(app.id);
+      return matchesSearch && matchesFavoriteFilter;
+    })
+    .sort((a, b) => {
+      // Trier : favoris en premier, puis par nom
+      const aIsFav = favorites.includes(a.id);
+      const bIsFav = favorites.includes(b.id);
+
+      if (aIsFav && !bIsFav) return -1;
+      if (!aIsFav && bIsFav) return 1;
+      return a.appname.localeCompare(b.appname);
+    });
 
   const handleAppClick = (lien: string) => {
     window.open(lien, '_blank', 'noopener,noreferrer');
   };
+
+  const favoriteCount = favorites.length;
 
   if (loading) {
     return (
@@ -74,7 +141,7 @@ const HomePage: React.FC = () => {
             </p>
 
             {/* Messages défilants */}
-            <ScrollingMessages className="mb-6 max-w-full mx-auto" />
+            <ScrollingMessages className="mb-6 max-w-4xl mx-auto" />
 
             {error && (
               <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-6 max-w-2xl mx-auto flex items-center">
@@ -99,6 +166,21 @@ const HomePage: React.FC = () => {
             </div>
 
             <div className="flex items-center space-x-4">
+              {/* Filtre favoris */}
+              <button
+                onClick={() => setShowOnlyFavorites(!showOnlyFavorites)}
+                className={`px-4 py-2 rounded-lg flex items-center space-x-2 transition-all ${showOnlyFavorites
+                    ? 'bg-yellow-500 text-white shadow-lg'
+                    : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                  }`}
+                aria-label="Afficher uniquement les favoris"
+              >
+                <Star className={`w-5 h-5 ${showOnlyFavorites ? 'fill-white' : ''}`} />
+                <span className="font-medium">
+                  Favoris {favoriteCount > 0 && `(${favoriteCount})`}
+                </span>
+              </button>
+
               {/* Toggle vue */}
               <div className="flex bg-white rounded-lg p-1 border">
                 <button
@@ -124,8 +206,11 @@ const HomePage: React.FC = () => {
               </div>
 
               {/* Bouton refresh */}
-              <button aria-label="Actualiser les applications" disabled={loading} onClick={()=>fetchApplications(setLoading, setError, setApplications)}
+              <button
+                onClick={fetchApplications}
                 className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors disabled:opacity-50"
+                disabled={loading}
+                aria-label="Actualiser les applications"
               >
                 <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
                 <span>Actualiser</span>
@@ -137,7 +222,11 @@ const HomePage: React.FC = () => {
           {filteredApplications.length === 0 && !loading ? (
             <div className="text-center py-12">
               <p className="text-xl text-gray-500">
-                {searchTerm ? 'Aucune application trouvée pour cette recherche' : 'Aucune application disponible'}
+                {showOnlyFavorites
+                  ? 'Aucun favori sélectionné. Cliquez sur l\'étoile pour ajouter des applications à vos favoris.'
+                  : searchTerm
+                    ? 'Aucune application trouvée pour cette recherche'
+                    : 'Aucune application disponible'}
               </p>
             </div>
           ) : (
@@ -146,16 +235,23 @@ const HomePage: React.FC = () => {
                 ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
                 : "space-y-4"
             }>
-              <AssistanceCard
-                onClick={() => setShowAssistanceModal(true)}
-                viewMode={viewMode}
-              />
+              {/* Carte Assistance toujours en premier */}
+              {!searchTerm && !showOnlyFavorites && (
+                <AssistanceCard
+                  onClick={() => setShowAssistanceModal(true)}
+                  viewMode={viewMode}
+                />
+              )}
+
+              {/* Applications filtrées et triées */}
               {filteredApplications.map((app) => (
                 <ApplicationCard
                   key={app.id}
                   application={app}
                   viewMode={viewMode}
                   onClick={handleAppClick}
+                  isFavorite={favorites.includes(app.id)}
+                  onToggleFavorite={(e) => toggleFavorite(app.id, e)}
                 />
               ))}
             </div>
@@ -166,10 +262,13 @@ const HomePage: React.FC = () => {
             <p>
               {filteredApplications.length} application(s)
               {searchTerm && ` trouvée(s) pour "${searchTerm}"`}
+              {showOnlyFavorites && ` dans vos favoris`}
             </p>
           </div>
         </div>
       </div>
+
+      {/* Modal d'assistance */}
       <AssistanceModal
         isOpen={showAssistanceModal}
         onClose={() => setShowAssistanceModal(false)}
