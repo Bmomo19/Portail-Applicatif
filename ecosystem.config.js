@@ -1,6 +1,6 @@
 module.exports = {
   apps: [{
-    name: 'app-portal',
+    name: 'portail',
     script: 'npm',
     args: 'start',
     cwd: './',
@@ -9,31 +9,20 @@ module.exports = {
     watch: false,
     max_memory_restart: '1G',
     
-    // Environnement par défaut
+    // Environnement de production (par défaut)
     env: {
-      NODE_ENV: 'development',
-      PORT: 3000,
-      DB_HOST: 'localhost',
-      DB_PORT: 3306,
-      DB_NAME: 'bdphoenix_dev'
-    },
-    
-    // Environnement de production
-    env_production: {
       NODE_ENV: 'production',
-      PORT: 4000,
-      DB_HOST: 'srv-mysql-prod',
-      DB_PORT: 3306,
-      DB_NAME: 'bdphoenix'
+      PORT: 4000
     },
     
-    // Environnement de test
-    env_staging: {
-      NODE_ENV: 'staging',
-      PORT: 4001,
-      DB_HOST: 'srv-mysql-staging',
-      DB_PORT: 3306,
-      DB_NAME: 'bdphoenix_staging'
-    }
+    // Logs
+    error_file: './logs/err.log',
+    out_file: './logs/out.log',
+    log_file: './logs/combined.log',
+    time: true,
+    
+    // Délai de redémarrage
+    restart_delay: 4000,
+    min_uptime: '10s'
   }]
 }
