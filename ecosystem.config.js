@@ -1,9 +1,8 @@
 module.exports = {
   apps: [{
     name: 'portail',
-    script: './node_modules/.bin/next',  // ✅ Chemin direct vers Next.js
-    args: 'start',
-    cwd: './',
+    script: 'start-server.js',
+    cwd: 'C:\\xampp\\htdocs\\portail',  // Chemin absolu Windows
     instances: 1,
     exec_mode: 'fork',
     autorestart: true,
@@ -17,7 +16,9 @@ module.exports = {
     
     error_file: './logs/err.log',
     out_file: './logs/out.log',
-    log_file: './logs/combined.log',
-    time: true
+    time: true,
+    
+    max_restarts: 5,
+    min_uptime: '10s'
   }]
 }
