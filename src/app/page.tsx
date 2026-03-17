@@ -170,8 +170,8 @@ const HomePage: React.FC = () => {
               <button
                 onClick={() => setShowOnlyFavorites(!showOnlyFavorites)}
                 className={`px-4 py-2 rounded-lg flex items-center space-x-2 transition-all ${showOnlyFavorites
-                    ? 'bg-yellow-500 text-white shadow-lg'
-                    : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                  ? 'bg-yellow-500 text-white shadow-lg'
+                  : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
                   }`}
                 aria-label="Afficher uniquement les favoris"
               >
@@ -237,22 +237,20 @@ const HomePage: React.FC = () => {
             }>
               {/* Carte Assistance toujours en premier */}
               {!searchTerm && !showOnlyFavorites && (
-                <AssistanceCard
-                  onClick={() => setShowAssistanceModal(true)}
-                  viewMode={viewMode}
-                />
+                <>
+                  <AssistanceCard onClick={() => setShowAssistanceModal(true)} viewMode={viewMode} />
+                  <ApplicationCard key={applications.length + 2} application={{
+                    id: applications.length + 2,
+                    appname: "Espace Reporting",
+                    applink: "/reports",
+                    description: "Accéder à tous vos rapports",
+                  }} viewMode={viewMode} onClick={handleAppClick} isFavorite={favorites.includes(applications.length + 2)} onToggleFavorite={(e) => toggleFavorite(applications.length + 2, e)} />
+                </>
               )}
 
               {/* Applications filtrées et triées */}
               {filteredApplications.map((app) => (
-                <ApplicationCard
-                  key={app.id}
-                  application={app}
-                  viewMode={viewMode}
-                  onClick={handleAppClick}
-                  isFavorite={favorites.includes(app.id)}
-                  onToggleFavorite={(e) => toggleFavorite(app.id, e)}
-                />
+                <ApplicationCard key={app.id} application={app} viewMode={viewMode} onClick={handleAppClick} isFavorite={favorites.includes(app.id)} onToggleFavorite={(e) => toggleFavorite(app.id, e)} />
               ))}
             </div>
           )}
@@ -269,10 +267,7 @@ const HomePage: React.FC = () => {
       </div>
 
       {/* Modal d'assistance */}
-      <AssistanceModal
-        isOpen={showAssistanceModal}
-        onClose={() => setShowAssistanceModal(false)}
-      />
+      <AssistanceModal isOpen={showAssistanceModal} onClose={() => setShowAssistanceModal(false)} />
     </>
   );
 };
