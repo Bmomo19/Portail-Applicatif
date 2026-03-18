@@ -1,4 +1,5 @@
 export interface ReportCategory {
+  report_count: number;
   id: string;
   name: string;
   icon: string | null;
@@ -12,6 +13,6 @@ export interface Report {
   categoryId: string | null;
   jasperUrl: string;
   thumbnailUrl: string | null;
-  isActive: boolean;
+  is_active: boolean;
   displayOrder: number;
 }
