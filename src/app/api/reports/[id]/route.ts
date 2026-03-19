@@ -6,14 +6,13 @@ import { NextResponse } from 'next/server';
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
         const { id } = await params;
-        console.log(id);
         const query = `
             SELECT 
                 r.*,
                 c.name as category_name        
             FROM t_reports r
             LEFT JOIN t_report_categories c ON r.categoryId = c.id
-            WHERE r.id = ? AND r.is_active = true
+            WHERE r.id = ? AND r.isActive = true
         `;
 
 

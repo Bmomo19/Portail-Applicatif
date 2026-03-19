@@ -12,7 +12,5 @@ export interface Report {
   description: string | null;
   categoryId: string | null;
   jasperUrl: string;
-  thumbnailUrl: string | null;
-  is_active: boolean;
-  displayOrder: number;
+  isActive: boolean;
 }

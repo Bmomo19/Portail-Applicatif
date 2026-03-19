@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
         }
 
         const result = await pool.execute(
-            'INSERT INTO t_report_categories (name) VALUES (?) RETURNING *',
+            'INSERT INTO t_report_categories (name) VALUES (?)',
             [name]
         );
 
@@ -31,6 +31,6 @@ export async function POST(request: NextRequest) {
         if (error.code === '23505') {
             return NextResponse.json({ error: 'Cette catégorie existe déjà' }, { status: 400 });
         }
-        return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });
+        return NextResponse.json({ error: error.message }, { status: 500 });
     }
 }

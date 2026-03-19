@@ -67,13 +67,10 @@ const HomePage: React.FC = () => {
 
   const toggleFavorite = (appId: number, event: React.MouseEvent) => {
     event.stopPropagation(); // Empêcher l'ouverture de l'application
-    console.log('Toggle favorite for appId:', appId); // Debug
     setFavorites(prev => {
       const newFavorites = prev.includes(appId)
         ? prev.filter(id => id !== appId)
         : [...prev, appId];
-      console.log('Previous favorites:', prev); // Debug
-      console.log('New favorites:', newFavorites); // Debug
       return newFavorites;
     });
   };

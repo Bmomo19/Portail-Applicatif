@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import pool from '@/lib/db';
 import { RowDataPacket } from 'mysql2';
 import { NextRequest, NextResponse } from 'next/server';
@@ -7,7 +8,7 @@ export async function PUT(request: NextRequest,{ params }: { params: { id: strin
 {
     try {
         const body = await request.json();
-        const { title, description, category_id, jasper_url, display_order, is_active } = body;
+        const { title, description, category_id, jasper_url, display_order, isActive } = body;
 
         // Validation
         if (!title || !jasper_url) {
@@ -25,7 +26,7 @@ export async function PUT(request: NextRequest,{ params }: { params: { id: strin
                 category_id = ?,
                 jasper_url = ?,
                 display_order = ?,
-                is_active = COALESCE(?, is_active)
+                isActive = COALESCE(?, isActive)
             WHERE id = ?
             RETURNING *
         `;
@@ -36,7 +37,7 @@ export async function PUT(request: NextRequest,{ params }: { params: { id: strin
             category_id || null,
             jasper_url,
             display_order || 0,
-            is_active,
+            isActive,
             params.id,
         ]);
 
@@ -58,7 +59,7 @@ export async function PUT(request: NextRequest,{ params }: { params: { id: strin
 export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
     try {
 
-        const query = 'DELETE FROM t_reports WHERE id = ? RETURNING id';
+        const query = 'DELETE FROM t_reports WHERE id = ?';
 
         const [result] = await pool.execute<RowDataPacket[]>(query, [params.id]);
 

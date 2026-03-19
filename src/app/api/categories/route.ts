@@ -10,7 +10,7 @@ export async function GET() {
                 c.name,
                 COUNT(r.id) as report_count
             FROM t_report_categories c
-            LEFT JOIN t_reports r ON c.id = r.categoryId AND r.is_active = true
+            LEFT JOIN t_reports r ON c.id = r.categoryId AND r.isActive = true
             GROUP BY c.id
             ORDER BY c.name
         `;

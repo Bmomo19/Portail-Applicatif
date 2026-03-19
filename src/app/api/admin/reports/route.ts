@@ -13,7 +13,7 @@ export async function GET() {
                 r.description,
                 r.categoryId,
                 r.jasperUrl,
-                r.is_active,
+                r.isActive,
                 c.name as category_name
             FROM t_reports r
             LEFT JOIN t_report_categories c ON r.categoryId = c.id
@@ -33,10 +33,10 @@ export async function GET() {
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
-        const { title, description, category_id, jasper_url, display_order } = body;
+        const { title, description, categoryId, jasperUrl } = body;
 
         // Validation
-        if (!title || !jasper_url) {
+        if (!title || !jasperUrl) {
             return NextResponse.json(
                 { error: 'Titre et URL JasperServer sont requis' },
                 { status: 400 }
@@ -45,11 +45,10 @@ export async function POST(request: NextRequest) {
 
         const query = `
                 INSERT INTO t_reports (title, description, categoryId, jasperUrl)
-                VALUES (?, ?, ?, ?, ?)
-                RETURNING *
+                VALUES (?, ?, ?, ?)
             `;
 
-        const [result] = await pool.execute<ResultSetHeader>(query, [title, description || null, category_id || null, jasper_url, display_order || 0]);
+        const [result] = await pool.execute<ResultSetHeader>(query, [title, description || null, categoryId || null, jasperUrl]);
 
         return NextResponse.json({ report: result }, { status: 201 });
     } catch (error: any) {

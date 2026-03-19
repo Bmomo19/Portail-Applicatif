@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
                 c.name as category_name
             FROM t_reports r
             LEFT JOIN t_report_categories c ON r.categoryId = c.id
-            WHERE r.is_active = true
+            WHERE r.isActive = true
         `;
 
         const params: number[] = [];

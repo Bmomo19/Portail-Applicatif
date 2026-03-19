@@ -4,7 +4,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Report, ReportCategory } from '@/types/reports';
-import { Search, Grid, List } from 'lucide-react';
+import { Search, Grid, List, RefreshCw, Settings } from 'lucide-react';
 import { ReportCard } from '../component/reports/ReportCard';
 import { CategoryFilter } from '../component/reports/CategoryFilter';
 
@@ -20,7 +20,7 @@ export default function ReportsPage() {
     useEffect(() => {
         fetchCategories();
         fetchReports();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedCategory]);
 
     const fetchCategories = async () => {
@@ -98,6 +98,26 @@ export default function ReportsPage() {
                             aria-label="Vue en liste"
                         >
                             <List className="w-5 h-5" />
+                        </button>
+                    </div>
+                    {/* Bouton refresh */}
+
+                    <button
+                        onClick={fetchReports}
+                        className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors disabled:opacity-50"
+                        disabled={isLoading}
+                        aria-label="Actualiser les rapports"
+                    >
+                        <RefreshCw className={`w-5 h-5 ${isLoading ? 'animate-spin' : ''}`} />
+                        <span>Actualiser</span>
+                    </button>
+                    <div className="flex bg-white rounded-lg p-1 border">
+                        <button
+                            onClick={() => router.push('admin')}
+                            className={`p-2 rounded transition-colors bg-blue-500 text-white`}
+                            aria-label="Administration des rapports"
+                        >
+                            <Settings />
                         </button>
                     </div>
                 </div>
