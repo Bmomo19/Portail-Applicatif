@@ -138,7 +138,7 @@ const HomePage: React.FC = () => {
             </p>
 
             {/* Messages défilants */}
-            <ScrollingMessages className="mb-6 max-w-4xl mx-auto" />
+            {/* <ScrollingMessages className="mb-6 max-w-4xl mx-auto" /> */}
 
             {error && (
               <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-6 max-w-2xl mx-auto flex items-center">
