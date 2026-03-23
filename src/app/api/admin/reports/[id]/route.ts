@@ -4,10 +4,10 @@ import { RowDataPacket } from 'mysql2';
 import { NextRequest, NextResponse } from 'next/server';
 
 // PUT - Mettre à jour un rapport
-export async function PUT(request: NextRequest,{ params }: { params: { id: string } })
-{
+export async function PUT(request: NextRequest, props: { params: Promise<{ id: string }> }) {
     try {
         const body = await request.json();
+        const params = await props.params;
         const { title, description, category_id, jasper_url, display_order, isActive } = body;
 
         // Validation
@@ -56,9 +56,9 @@ export async function PUT(request: NextRequest,{ params }: { params: { id: strin
 }
 
 // DELETE - Supprimer un rapport
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(request: NextRequest, props: { params: Promise<{ id: string }> }) {
     try {
-
+        const params = await props.params;
         const query = 'DELETE FROM t_reports WHERE id = ?';
 
         const [result] = await pool.execute<RowDataPacket[]>(query, [params.id]);
