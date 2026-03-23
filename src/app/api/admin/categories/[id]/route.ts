@@ -8,10 +8,10 @@ export async function PUT(
 ) {
     try {
         const { name } = await request.json();
-
+        const { id } = await params;
         const [result] = await pool.execute<RowDataPacket[]>(
             'UPDATE t_report_categories SET name = ? WHERE id = ? RETURNING *',
-            [name, params.id]
+            [name, id]
         );
 
         if (result.length === 0) {
@@ -29,10 +29,11 @@ export async function DELETE(
     { params }: { params: { id: string } }
 ) {
     try {
+        const { id } = await params;
         // Vérifier s'il y a des rapports dans cette catégorie
         const [checkResult] = await pool.execute<RowDataPacket[]>(
             'SELECT COUNT(*) as count FROM t_reports WHERE categoryId = ?',
-            [params.id]
+            [id]
         );
 
         if (parseInt(checkResult[0].count) > 0) {
