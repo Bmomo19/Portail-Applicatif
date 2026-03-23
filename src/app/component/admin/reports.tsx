@@ -250,10 +250,10 @@ const AdminReportComponent: React.FC<AdminCategoriesComponentProps> = ({ categor
                                     </td>
                                     <td className="px-6 py-4">
                                         <div className="flex gap-2">
-                                            <button onClick={() => openModal(report)} title="Modifier" className="text-blue-600 hover:text-blue-800 p-1 hover:bg-blue-50 rounded transition-colors">
+                                            <button disabled onClick={() => openModal(report)} title="Modifier" className="text-blue-600 hover:text-blue-800 p-1 hover:bg-blue-50 rounded transition-colors">
                                                 <Edit size={18} />
                                             </button>
-                                            <button onClick={() => handleDelete(report.id)} className="text-red-600 hover:text-red-800 p-1 hover:bg-red-50 rounded transition-colors" title="Supprimer">
+                                            <button disabled onClick={() => handleDelete(report.id)} className="text-red-600 hover:text-red-800 p-1 hover:bg-red-50 rounded transition-colors" title="Supprimer">
                                                 <Trash2 size={18} />
                                             </button>
                                         </div>
@@ -273,7 +273,7 @@ const AdminReportComponent: React.FC<AdminCategoriesComponentProps> = ({ categor
                         onClick={(e) => e.stopPropagation()}
                     >
                         {/* Modal Header */}
-                        <div className="px-6 py-4 border-b flex items-center text-gray-700 justify-between bg-gradient-to-r from-blue-50 to-white">
+                        <div className="px-6 py-4 border-b flex items-center text-gray-700 justify-between bg-linear-to-r from-blue-50 to-white">
                             <h2 className="text-xl font-semibold">
                                 {editingReport ? 'Modifier le rapport' : 'Nouveau rapport'}
                             </h2>

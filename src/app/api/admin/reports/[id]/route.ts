@@ -8,7 +8,8 @@ export async function PUT(request: NextRequest, props: { params: Promise<{ id: s
     try {
         const body = await request.json();
         const params = await props.params;
-        const { title, description, categoryId, jasperUrl, isActive } = body;
+        
+        const { title, description, categoryId, jasperUrl } = body;
 
         // Validation
         if (!title || !jasperUrl) {
@@ -25,7 +26,6 @@ export async function PUT(request: NextRequest, props: { params: Promise<{ id: s
                 description = ?,
                 categoryId = ?,
                 jasperUrl = ?,
-                isActive = COALESCE(?, isActive)
             WHERE id = ?
         `;
 
@@ -34,7 +34,6 @@ export async function PUT(request: NextRequest, props: { params: Promise<{ id: s
             description || null,
             categoryId || null,
             jasperUrl,
-            isActive,
             params.id,
         ]);
 

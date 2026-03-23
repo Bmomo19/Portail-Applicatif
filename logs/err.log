@@ -5,3 +5,89 @@
 2026-03-23T09:15:57:  Detected additional lockfiles: 
 2026-03-23T09:15:57:    * C:\xampp\htdocs\portail\package-lock.json
 2026-03-23T09:15:57: 
+2026-03-23T10:13:56:  ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+2026-03-23T10:13:56:  We detected multiple lockfiles and selected the directory of C:\xampp\htdocs\package-lock.json as the root directory.
+2026-03-23T10:13:56:  To silence this warning, set `outputFileTracingRoot` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+2026-03-23T10:13:56:    See https://nextjs.org/docs/app/api-reference/config/next-config-js/output#caveats for more information.
+2026-03-23T10:13:56:  Detected additional lockfiles: 
+2026-03-23T10:13:56:    * C:\xampp\htdocs\portail\package-lock.json
+2026-03-23T10:13:56: 
+2026-03-23T15:41:06:  ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+2026-03-23T15:41:06:  We detected multiple lockfiles and selected the directory of C:\xampp\htdocs\package-lock.json as the root directory.
+2026-03-23T15:41:06:  To silence this warning, set `outputFileTracingRoot` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+2026-03-23T15:41:06:    See https://nextjs.org/docs/app/api-reference/config/next-config-js/output#caveats for more information.
+2026-03-23T15:41:06:  Detected additional lockfiles: 
+2026-03-23T15:41:06:    * C:\xampp\htdocs\portail\package-lock.json
+2026-03-23T15:41:06: 
+2026-03-23T15:46:03:  ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+2026-03-23T15:46:03:  We detected multiple lockfiles and selected the directory of C:\xampp\htdocs\package-lock.json as the root directory.
+2026-03-23T15:46:03:  To silence this warning, set `outputFileTracingRoot` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+2026-03-23T15:46:03:    See https://nextjs.org/docs/app/api-reference/config/next-config-js/output#caveats for more information.
+2026-03-23T15:46:03:  Detected additional lockfiles: 
+2026-03-23T15:46:03:    * C:\xampp\htdocs\portail\package-lock.json
+2026-03-23T15:46:03: 
+2026-03-23T15:47:32: Error: Error: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
+2026-03-23T15:47:32:     at i.execute (C:\xampp\htdocs\portail\.next\server\chunks\382.js:1:117021)
+2026-03-23T15:47:32:     at w (C:\xampp\htdocs\portail\.next\server\app\api\admin\reports\[id]\route.js:10:25)
+2026-03-23T15:47:32:     at async k (C:\xampp\htdocs\portail\.next\server\app\api\admin\reports\[id]\route.js:10:3356)
+2026-03-23T15:47:32:     at async g (C:\xampp\htdocs\portail\.next\server\app\api\admin\reports\[id]\route.js:10:4359)
+2026-03-23T15:47:32:     at async D (C:\xampp\htdocs\portail\.next\server\app\api\admin\reports\[id]\route.js:10:5481) {
+2026-03-23T15:47:32:   code: undefined,
+2026-03-23T15:47:32:   errno: undefined,
+2026-03-23T15:47:32:   sql: undefined,
+2026-03-23T15:47:32:   sqlState: undefined,
+2026-03-23T15:47:32:   sqlMessage: undefined
+2026-03-23T15:47:32: }
+2026-03-23T15:56:03:  ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+2026-03-23T15:56:03:  We detected multiple lockfiles and selected the directory of C:\xampp\htdocs\package-lock.json as the root directory.
+2026-03-23T15:56:03:  To silence this warning, set `outputFileTracingRoot` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+2026-03-23T15:56:03:    See https://nextjs.org/docs/app/api-reference/config/next-config-js/output#caveats for more information.
+2026-03-23T15:56:03:  Detected additional lockfiles: 
+2026-03-23T15:56:03:    * C:\xampp\htdocs\portail\package-lock.json
+2026-03-23T15:56:03: 
+2026-03-23T15:56:16: Error: Error: Bind parameters must not contain undefined. To pass SQL NULL specify JS null
+2026-03-23T15:56:16:     at i.execute (C:\xampp\htdocs\portail\.next\server\chunks\382.js:1:117021)
+2026-03-23T15:56:16:     at w (C:\xampp\htdocs\portail\.next\server\app\api\admin\reports\[id]\route.js:10:25)
+2026-03-23T15:56:16:     at async k (C:\xampp\htdocs\portail\.next\server\app\api\admin\reports\[id]\route.js:10:3356)
+2026-03-23T15:56:16:     at async g (C:\xampp\htdocs\portail\.next\server\app\api\admin\reports\[id]\route.js:10:4359)
+2026-03-23T15:56:16:     at async D (C:\xampp\htdocs\portail\.next\server\app\api\admin\reports\[id]\route.js:10:5481) {
+2026-03-23T15:56:16:   code: undefined,
+2026-03-23T15:56:16:   errno: undefined,
+2026-03-23T15:56:16:   sql: undefined,
+2026-03-23T15:56:16:   sqlState: undefined,
+2026-03-23T15:56:16:   sqlMessage: undefined
+2026-03-23T15:56:16: }
+2026-03-23T15:58:35:  ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+2026-03-23T15:58:35:  We detected multiple lockfiles and selected the directory of C:\xampp\htdocs\package-lock.json as the root directory.
+2026-03-23T15:58:35:  To silence this warning, set `outputFileTracingRoot` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+2026-03-23T15:58:35:    See https://nextjs.org/docs/app/api-reference/config/next-config-js/output#caveats for more information.
+2026-03-23T15:58:35:  Detected additional lockfiles: 
+2026-03-23T15:58:35:    * C:\xampp\htdocs\portail\package-lock.json
+2026-03-23T15:58:35: 
+2026-03-23T15:58:41: Error: Error: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'WHERE id = ?' at line 7
+2026-03-23T15:58:41:     at i.execute (C:\xampp\htdocs\portail\.next\server\chunks\382.js:1:117021)
+2026-03-23T15:58:41:     at w (C:\xampp\htdocs\portail\.next\server\app\api\admin\reports\[id]\route.js:9:25)
+2026-03-23T15:58:41:     at async k (C:\xampp\htdocs\portail\.next\server\app\api\admin\reports\[id]\route.js:9:3354)
+2026-03-23T15:58:41:     at async g (C:\xampp\htdocs\portail\.next\server\app\api\admin\reports\[id]\route.js:9:4357)
+2026-03-23T15:58:41:     at async D (C:\xampp\htdocs\portail\.next\server\app\api\admin\reports\[id]\route.js:9:5479) {
+2026-03-23T15:58:41:   code: 'ER_PARSE_ERROR',
+2026-03-23T15:58:41:   errno: 1064,
+2026-03-23T15:58:41:   sql: '\n' +
+2026-03-23T15:58:41:     '            UPDATE t_reports\n' +
+2026-03-23T15:58:41:     '            SET \n' +
+2026-03-23T15:58:41:     '                title = ?,\n' +
+2026-03-23T15:58:41:     '                description = ?,\n' +
+2026-03-23T15:58:41:     '                categoryId = ?,\n' +
+2026-03-23T15:58:41:     '                jasperUrl = ?,\n' +
+2026-03-23T15:58:41:     '            WHERE id = ?\n' +
+2026-03-23T15:58:41:     '        ',
+2026-03-23T15:58:41:   sqlState: '42000',
+2026-03-23T15:58:41:   sqlMessage: "You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'WHERE id = ?' at line 7"
+2026-03-23T15:58:41: }
+2026-03-23T16:05:27:  ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+2026-03-23T16:05:27:  We detected multiple lockfiles and selected the directory of C:\xampp\htdocs\package-lock.json as the root directory.
+2026-03-23T16:05:27:  To silence this warning, set `outputFileTracingRoot` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+2026-03-23T16:05:27:    See https://nextjs.org/docs/app/api-reference/config/next-config-js/output#caveats for more information.
+2026-03-23T16:05:27:  Detected additional lockfiles: 
+2026-03-23T16:05:27:    * C:\xampp\htdocs\portail\package-lock.json
+2026-03-23T16:05:27: 

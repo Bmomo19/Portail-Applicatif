@@ -153,10 +153,10 @@ const AdminCategoriesComponent: React.FC<AdminCategoriesComponentProps> = ({ cat
                                 </td>
                                 <td className="px-6 py-4">
                                     <div className="flex gap-2">
-                                        <button onClick={() => openModal(category)} className="text-blue-600 hover:text-blue-800 p-1 hover:bg-blue-50 rounded">
+                                        <button disabled onClick={() => openModal(category)} className="text-blue-600 hover:text-blue-800 p-1 hover:bg-blue-50 rounded">
                                             <Edit size={18} />
                                         </button>
-                                        <button onClick={() => handleDelete(category.id)} className="text-red-600 hover:text-red-800 p-1 hover:bg-red-50 rounded">
+                                        <button disabled onClick={() => handleDelete(category.id)} className="text-red-600 hover:text-red-800 p-1 hover:bg-red-50 rounded">
                                             <Trash2 size={18} />
                                         </button>
                                     </div>
@@ -171,7 +171,7 @@ const AdminCategoriesComponent: React.FC<AdminCategoriesComponentProps> = ({ cat
             {isModalOpen && (
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
                     <div className="bg-white rounded-xl shadow-2xl max-w-lg w-full">
-                        <div className="px-6 py-4 border-b flex items-center text-gray-700 justify-between bg-gradient-to-r from-blue-50 to-white">
+                        <div className="px-6 py-4 border-b flex items-center text-gray-700 justify-between bg-linear-to-r from-blue-50 to-white">
                             <h2 className="text-xl font-semibold">
                                 {editingCategory ? 'Modifier la catégorie' : 'Nouvelle catégorie'}
                             </h2>
