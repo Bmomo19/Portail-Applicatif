@@ -12,7 +12,7 @@ interface ReportCardProps {
 export function ReportCard({ report, viewMode, onOpen }: ReportCardProps) {
   if (viewMode === 'list') {
     return (
-      <div className="bg-white border rounded-lg p-6 hover:shadow-lg transition-shadow flex items-center gap-6">
+      <div className="bg-white border rounded-lg p-4 hover:shadow-lg transition-shadow flex items-center gap-6">
         <div className="flex-shrink-0">
           <div className="w-16 h-16 bg-blue-100 rounded-lg flex items-center justify-center">
             <FileText size={32} className="text-blue-600" />
@@ -25,7 +25,7 @@ export function ReportCard({ report, viewMode, onOpen }: ReportCardProps) {
         </div>
         
         <button onClick={onOpen} className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
-          Ouvrir
+          Consulter
           <ExternalLink size={16} />
         </button>
       </div>
@@ -33,7 +33,7 @@ export function ReportCard({ report, viewMode, onOpen }: ReportCardProps) {
   }
 
   return (
-    <div className="bg-white border rounded-lg p-6 hover:shadow-lg transition-all hover:-translate-y-1">
+    <div className="bg-white border rounded-lg p-4 hover:shadow-lg transition-all hover:-translate-y-1">
       <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
         <FileText size={24} className="text-blue-600" />
       </div>
@@ -44,7 +44,7 @@ export function ReportCard({ report, viewMode, onOpen }: ReportCardProps) {
       </p>
 
       <button onClick={onOpen} className="w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2">
-        Ouvrir
+        Consulter
         <ExternalLink size={16} />
       </button>
     </div>

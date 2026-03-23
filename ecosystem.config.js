@@ -6,16 +6,15 @@ module.exports = {
     instances: 1,
     exec_mode: 'fork',
     autorestart: true,
-    watch: false, // ⚠️ Désactive watch en production (cause des restarts inutiles)
+    watch: false,
     max_memory_restart: '1G',
     
-    // Ajouter les options Node.js pour supprimer le warning
     node_args: '--no-deprecation',
     
     env: {
       NODE_ENV: 'production',
       PORT: 4000,
-      NODE_NO_WARNINGS: '1' // Supprimer tous les warnings
+      NODE_NO_WARNINGS: '1'
     },
     
     error_file: './logs/err.log',

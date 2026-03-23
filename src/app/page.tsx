@@ -6,7 +6,6 @@ import { Application } from '@/types/application';
 import ApplicationCard from '@/app/component/ApplicationCard';
 import AssistanceCard from '@/app/component/AssistanceCard';
 import AssistanceModal from '@/app/component/AssistanceModal';
-import ScrollingMessages from '@/app/component/ScrollingMessages';
 import Image from 'next/image';
 
 const HomePage: React.FC = () => {
