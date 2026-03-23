@@ -4,11 +4,12 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function PUT(
     request: NextRequest,
-    { params }: { params: { id: string } }
+    props: { params: Promise<{ id: string }> }
 ) {
     try {
         const { name } = await request.json();
-        const { id } = await params;
+        const params = await props.params;
+        const { id } = params;
         const [result] = await pool.execute<RowDataPacket[]>(
             'UPDATE t_report_categories SET name = ? WHERE id = ? RETURNING *',
             [name, id]
@@ -26,10 +27,11 @@ export async function PUT(
 
 export async function DELETE(
     request: NextRequest,
-    { params }: { params: { id: string } }
+    props: { params: Promise<{ id: string }> }
 ) {
     try {
-        const { id } = await params;
+        const params = await props.params;
+        const { id } = params;
         // Vérifier s'il y a des rapports dans cette catégorie
         const [checkResult] = await pool.execute<RowDataPacket[]>(
             'SELECT COUNT(*) as count FROM t_reports WHERE categoryId = ?',
