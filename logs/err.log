@@ -1,0 +1,7 @@
+2026-03-23T09:15:57:  ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+2026-03-23T09:15:57:  We detected multiple lockfiles and selected the directory of C:\xampp\htdocs\package-lock.json as the root directory.
+2026-03-23T09:15:57:  To silence this warning, set `outputFileTracingRoot` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+2026-03-23T09:15:57:    See https://nextjs.org/docs/app/api-reference/config/next-config-js/output#caveats for more information.
+2026-03-23T09:15:57:  Detected additional lockfiles: 
+2026-03-23T09:15:57:    * C:\xampp\htdocs\portail\package-lock.json
+2026-03-23T09:15:57: 
