@@ -11,7 +11,7 @@ export async function PUT(
         const params = await props.params;
         const { id } = params;
         const [result] = await pool.execute<RowDataPacket[]>(
-            'UPDATE t_report_categories SET name = ? WHERE id = ? RETURNING *',
+            'UPDATE t_report_categories SET name = ? WHERE id = ?',
             [name, id]
         );
 
@@ -46,7 +46,7 @@ export async function DELETE(
         }
 
         const [result] = await pool.execute<RowDataPacket[]>(
-            'DELETE FROM t_report_categories WHERE id = ? RETURNING id',
+            'DELETE FROM t_report_categories WHERE id = ?',
             [params.id]
         );
 

@@ -8,10 +8,10 @@ export async function PUT(request: NextRequest, props: { params: Promise<{ id: s
     try {
         const body = await request.json();
         const params = await props.params;
-        const { title, description, category_id, jasper_url, display_order, isActive } = body;
+        const { title, description, categoryId, jasperUrl, isActive } = body;
 
         // Validation
-        if (!title || !jasper_url) {
+        if (!title || !jasperUrl) {
             return NextResponse.json(
                 { error: 'Titre et URL JasperServer sont requis' },
                 { status: 400 }
@@ -23,20 +23,17 @@ export async function PUT(request: NextRequest, props: { params: Promise<{ id: s
             SET 
                 title = ?,
                 description = ?,
-                category_id = ?,
-                jasper_url = ?,
-                display_order = ?,
+                categoryId = ?,
+                jasperUrl = ?,
                 isActive = COALESCE(?, isActive)
             WHERE id = ?
-            RETURNING *
         `;
 
         const [result] = await pool.execute<RowDataPacket[]>(query, [
             title,
             description || null,
-            category_id || null,
-            jasper_url,
-            display_order || 0,
+            categoryId || null,
+            jasperUrl,
             isActive,
             params.id,
         ]);
