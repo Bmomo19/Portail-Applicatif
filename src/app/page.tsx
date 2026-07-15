@@ -243,7 +243,7 @@ const HomePage: React.FC = () => {
                   }} viewMode={viewMode} onClick={handleAppClick} isFavorite={favorites.includes(applications.length + 2)} onToggleFavorite={(e) => toggleFavorite(applications.length + 2, e)} />
                   <ApplicationCard key={applications.length + 3} application={{
                     id: applications.length + 3,
-                    appname: "Espace Campagnes",
+                    appname: "Espace Communication",
                     applink: "/campagnes",
                     description: "Consulter les vidéos de communication interne",
                   }} viewMode={viewMode} onClick={handleAppClick} isFavorite={favorites.includes(applications.length + 3)} onToggleFavorite={(e) => toggleFavorite(applications.length + 3, e)} />

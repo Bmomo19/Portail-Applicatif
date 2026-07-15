@@ -32,7 +32,7 @@ const CampagnesAdminPage: React.FC = () => {
         <div className="min-h-screen bg-linear-to-br from-blue-50 to-indigo-100">
 
             <div className="container mx-auto px-4 py-8 gap-5">
-                <button onClick={() => router.push('/campagnes')} className={`rounded transition-colors bg-blue-500 text-white`} aria-label="Retour à l'espace campagnes">
+                <button onClick={() => router.push('/campagnes')} className={`rounded transition-colors bg-blue-500 text-white`} aria-label="Retour à l'espace communication">
                     <SquareArrowLeft />
                 </button>
                 <AdminCampagnesComponent campagnes={campagnes} isLoading={isLoading} fetchCampagnes={fetchCampagnes} />
