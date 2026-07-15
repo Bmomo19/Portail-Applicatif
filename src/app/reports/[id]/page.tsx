@@ -76,14 +76,7 @@ export default function ReportViewerPage() {
         );
     }
 
-    const url = new URL(report.jasperUrl);
-    if (!url.searchParams.has('decor')) {
-        url.searchParams.set('decor', 'no');
-    }
-    url.searchParams.set('j_username', process.env.JASPER_USERNAME || 'jasperadmin');
-    url.searchParams.set('j_password', process.env.JASPER_PASSWORD || 'jasperadmin');
-
-    const viewerUrl = url.toString();
+    const viewerUrl = report.viewerUrl || report.jasperUrl;
 
     return (
         <div className="flex flex-col h-screen bg-gray-50">

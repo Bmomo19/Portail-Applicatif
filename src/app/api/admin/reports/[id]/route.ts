@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import pool from '@/lib/db';
-import { RowDataPacket } from 'mysql2';
+import { ResultSetHeader } from 'mysql2';
 import { NextRequest, NextResponse } from 'next/server';
 
 // PUT - Mettre à jour un rapport
@@ -8,7 +8,7 @@ export async function PUT(request: NextRequest, props: { params: Promise<{ id: s
     try {
         const body = await request.json();
         const params = await props.params;
-        
+
         const { title, description, categoryId, jasperUrl } = body;
 
         // Validation
@@ -21,15 +21,15 @@ export async function PUT(request: NextRequest, props: { params: Promise<{ id: s
 
         const query = `
             UPDATE t_reports
-            SET 
+            SET
                 title = ?,
                 description = ?,
                 categoryId = ?,
-                jasperUrl = ?,
+                jasperUrl = ?
             WHERE id = ?
         `;
 
-        const [result] = await pool.execute<RowDataPacket[]>(query, [
+        const [result] = await pool.execute<ResultSetHeader>(query, [
             title,
             description || null,
             categoryId || null,
@@ -37,7 +37,7 @@ export async function PUT(request: NextRequest, props: { params: Promise<{ id: s
             params.id,
         ]);
 
-        if (result.length === 0) {
+        if (result.affectedRows === 0) {
             return NextResponse.json({ error: 'Rapport non trouvé' }, { status: 404 });
         }
 
@@ -57,9 +57,9 @@ export async function DELETE(request: NextRequest, props: { params: Promise<{ id
         const params = await props.params;
         const query = 'DELETE FROM t_reports WHERE id = ?';
 
-        const [result] = await pool.execute<RowDataPacket[]>(query, [params.id]);
+        const [result] = await pool.execute<ResultSetHeader>(query, [params.id]);
 
-        if (result.length === 0) {
+        if (result.affectedRows === 0) {
             return NextResponse.json({ error: 'Rapport non trouvé' }, { status: 404 });
         }
 

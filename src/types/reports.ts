@@ -13,4 +13,5 @@ export interface Report {
   categoryId: string | null;
   jasperUrl: string;
   isActive: boolean;
+  viewerUrl?: string;
 }

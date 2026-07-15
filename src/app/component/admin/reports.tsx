@@ -1,6 +1,6 @@
 import { ReportCategory, Report } from '@/types/reports';
-import { Edit, Loader2, Plus, Save, Trash2, X } from 'lucide-react';
-import React, { useState } from 'react';
+import { ChevronLeft, ChevronRight, Edit, Loader2, Plus, Save, Trash2, X } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 
 interface AdminCategoriesComponentProps {
     categories: ReportCategory[];
@@ -9,8 +9,10 @@ interface AdminCategoriesComponentProps {
     fetchData: () => Promise<void>;
 }
 
+const REPORTS_PER_PAGE = 10;
+
 const AdminReportComponent: React.FC<AdminCategoriesComponentProps> = ({ categories, reports, isLoading, fetchData }) => {
-    
+
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingReport, setEditingReport] = useState<Report | null>(null);
     const [formData, setFormData] = useState({
@@ -20,7 +22,21 @@ const AdminReportComponent: React.FC<AdminCategoriesComponentProps> = ({ categor
         jasperUrl: ''
     });
     const [errors, setErrors] = useState<Record<string, string>>({});
-    const [isSaving, setIsSaving] = useState(false);   
+    const [isSaving, setIsSaving] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+
+    const totalPages = Math.max(1, Math.ceil(reports.length / REPORTS_PER_PAGE));
+
+    useEffect(() => {
+        if (currentPage > totalPages) {
+            setCurrentPage(totalPages);
+        }
+    }, [currentPage, totalPages]);
+
+    const paginatedReports = reports.slice(
+        (currentPage - 1) * REPORTS_PER_PAGE,
+        currentPage * REPORTS_PER_PAGE
+    );
 
     const openModal = (report?: Report) => {
         if (report) {
@@ -215,7 +231,7 @@ const AdminReportComponent: React.FC<AdminCategoriesComponentProps> = ({ categor
                                 </td>
                             </tr>
                         ) : (
-                            reports.map((report) => (
+                            paginatedReports.map((report) => (
                                 <tr key={report.id} className="hover:bg-gray-50 transition-colors">
                                     <td className="px-6 py-4">
                                         <div>
@@ -263,6 +279,36 @@ const AdminReportComponent: React.FC<AdminCategoriesComponentProps> = ({ categor
                         )}
                     </tbody>
                 </table>
+
+                {reports.length > 0 && (
+                    <div className="flex items-center justify-between px-6 py-4 border-t bg-gray-50">
+                        <p className="text-sm text-gray-600">
+                            Affichage de {(currentPage - 1) * REPORTS_PER_PAGE + 1} à{' '}
+                            {Math.min(currentPage * REPORTS_PER_PAGE, reports.length)} sur {reports.length} rapport{reports.length > 1 ? 's' : ''}
+                        </p>
+                        <div className="flex items-center gap-2">
+                            <button
+                                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                                disabled={currentPage === 1}
+                                className="p-2 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                aria-label="Page précédente"
+                            >
+                                <ChevronLeft size={18} />
+                            </button>
+                            <span className="text-sm text-gray-700 px-2">
+                                Page {currentPage} / {totalPages}
+                            </span>
+                            <button
+                                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                                disabled={currentPage === totalPages}
+                                className="p-2 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                aria-label="Page suivante"
+                            >
+                                <ChevronRight size={18} />
+                            </button>
+                        </div>
+                    </div>
+                )}
             </div>
 
             {/* Modal */}

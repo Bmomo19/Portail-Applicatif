@@ -1,7 +1,7 @@
 export interface MessagePortail {
   id: number;
   contenu: string;
-  actif?: boolean;
+  isactif?: boolean;
   datsaisie?: Date;
   datmodif?: Date;
 }

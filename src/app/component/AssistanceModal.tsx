@@ -83,7 +83,7 @@ const AssistanceModal: React.FC<AssistanceModalProps> = ({ isOpen, onClose }) =>
                 <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
                 <h3 className="text-2xl font-bold text-gray-800 mb-2">Demande envoyée !</h3>
                 <p className="text-gray-600">
-                    Votre demande a été enregistrée avec succès. Vous recevrez une confirmation par email.
+                    Votre demande a été enregistrée avec succès. Notre équipe la traitera dans les plus brefs délais.
                 </p>
             </div>
         );

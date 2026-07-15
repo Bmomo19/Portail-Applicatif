@@ -25,7 +25,15 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
             );
         }
 
-        return NextResponse.json({ report: rows[0] });
+        const report = rows[0];
+        const viewerUrl = new URL(report.jasperUrl);
+        if (!viewerUrl.searchParams.has('decor')) {
+            viewerUrl.searchParams.set('decor', 'no');
+        }
+        viewerUrl.searchParams.set('j_username', process.env.JASPER_USERNAME || 'jasperadmin');
+        viewerUrl.searchParams.set('j_password', process.env.JASPER_PASSWORD || 'jasperadmin');
+
+        return NextResponse.json({ report: { ...report, viewerUrl: viewerUrl.toString() } });
     } catch (error) {
         console.error('Error:', error);
         return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });

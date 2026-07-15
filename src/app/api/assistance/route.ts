@@ -53,33 +53,6 @@ export async function POST(req: Request) {
         subject: emailSubject,
         html: emailHTML,
       });
-
-      // Envoi confirmation au client (si email fourni)
-      if (demande.app) {
-        const confirmationHTML = `
-          <!DOCTYPE html>
-          <html>
-          <body style="font-family: Arial, sans-serif; padding: 20px;">
-            <h2>Confirmation de votre demande #${demandeId}</h2>
-            <p>Bonjour ${demande.nom},</p>
-            <p>Nous avons bien reçu votre ${demande.type === "assistance"
-            ? "demande d'assistance"
-            : "déclaration d'incident"
-          }.</p>
-            <p><strong>Sujet:</strong> ${demande.sujet}</p>
-            <p><strong>Numéro de ticket:</strong> #${demandeId}</p>
-            <p>Notre équipe traitera votre demande dans les plus brefs délais.</p>
-            <p>Cordialement,<br>L'équipe du Portail Phoenix</p>
-          </body>
-          </html>
-        `;
-
-        await sendEmail({
-          to: 'bouraima224@protonmail.com',
-          subject: `Confirmation de votre demande #${demandeId}`,
-          html: confirmationHTML,
-        });
-      }
     } catch (emailError) {
       console.error("Erreur envoi email:", emailError);
       // On n'échoue pas si email raté, car la demande est enregistrée

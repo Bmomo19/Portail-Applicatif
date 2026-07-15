@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
 
         return NextResponse.json({ category: result[0] }, { status: 201 });
     } catch (error: any) {
-        if (error.code === '23505') {
+        if (error.code === 'ER_DUP_ENTRY') {
             return NextResponse.json({ error: 'Cette catégorie existe déjà' }, { status: 400 });
         }
         return NextResponse.json({ error: error.message }, { status: 500 });

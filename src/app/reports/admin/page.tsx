@@ -1,13 +1,13 @@
 'use client'
 import React, { useState } from 'react'
-import AdminReportComponent from '../component/admin/reports'
-import AdminCategoriesComponent from '../component/admin/categories'
+import AdminReportComponent from '@/app/component/admin/reports'
+import AdminCategoriesComponent from '@/app/component/admin/categories'
 import { Report, ReportCategory } from '@/types/reports'
 import { SquareArrowLeft } from 'lucide-react'
 import { useRouter } from 'next/navigation';
 
 
-const AdminPage: React.FC = () => {
+const ReportsAdminPage: React.FC = () => {
     const router = useRouter();
     const [categories, setCategories] = useState<ReportCategory[]>([]);
     const [reports, setReports] = useState<Report[]>([]);
@@ -33,6 +33,7 @@ const AdminPage: React.FC = () => {
             setIsLoading(false);
         }
     };
+
     React.useEffect(() => {
         fetchData();
     }, []);
@@ -41,7 +42,7 @@ const AdminPage: React.FC = () => {
         <div className="min-h-screen bg-linear-to-br from-blue-50 to-indigo-100">
 
             <div className="container mx-auto px-4 py-8 gap-5">
-                <button onClick={() => router.back()} className={`rounded transition-colors bg-blue-500 text-white`} aria-label="Administration des rapports">
+                <button onClick={() => router.push('/reports')} className={`rounded transition-colors bg-blue-500 text-white`} aria-label="Retour à l'espace reporting">
                     <SquareArrowLeft />
                 </button>
                 <AdminReportComponent categories={categories} reports={reports} isLoading={isLoading} fetchData={fetchData} />
@@ -51,4 +52,4 @@ const AdminPage: React.FC = () => {
     )
 }
 
-export default AdminPage
+export default ReportsAdminPage

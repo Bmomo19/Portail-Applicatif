@@ -1,5 +1,5 @@
 import pool from '@/lib/db';
-import { RowDataPacket } from 'mysql2';
+import { ResultSetHeader, RowDataPacket } from 'mysql2';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function PUT(
@@ -10,12 +10,12 @@ export async function PUT(
         const { name } = await request.json();
         const params = await props.params;
         const { id } = params;
-        const [result] = await pool.execute<RowDataPacket[]>(
+        const [result] = await pool.execute<ResultSetHeader>(
             'UPDATE t_report_categories SET name = ? WHERE id = ?',
             [name, id]
         );
 
-        if (result.length === 0) {
+        if (result.affectedRows === 0) {
             return NextResponse.json({ error: 'Catégorie non trouvée' }, { status: 404 });
         }
 
@@ -45,12 +45,12 @@ export async function DELETE(
             );
         }
 
-        const [result] = await pool.execute<RowDataPacket[]>(
+        const [result] = await pool.execute<ResultSetHeader>(
             'DELETE FROM t_report_categories WHERE id = ?',
             [params.id]
         );
 
-        if (result.length === 0) {
+        if (result.affectedRows === 0) {
             return NextResponse.json({ error: 'Catégorie non trouvée' }, { status: 404 });
         }
 
