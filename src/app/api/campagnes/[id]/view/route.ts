@@ -21,11 +21,11 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
         }
 
         const [campagneRows] = await pool.execute<RowDataPacket[]>(
-            'SELECT id FROM t_campagne_com WHERE id = ?',
+            'SELECT id, isactif FROM t_campagne_com WHERE id = ?',
             [id]
         );
 
-        if (campagneRows.length === 0) {
+        if (campagneRows.length === 0 || campagneRows[0].isactif === 0) {
             return NextResponse.json({ error: 'Campagne non trouvée' }, { status: 404 });
         }
 

@@ -2,6 +2,7 @@ export interface Campagne {
   id: number;
   titre: string;
   description: string | null;
+  isactif?: boolean;
   userSaisie?: string | null;
   dateSaisie?: Date;
   userModif?: string | null;

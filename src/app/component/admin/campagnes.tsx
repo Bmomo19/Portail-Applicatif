@@ -1,7 +1,7 @@
 'use client';
 
-import { Campagne } from '@/types/campagne';
-import { Loader2, Plus, Save, X, Eye } from 'lucide-react';
+import { Campagne, CampagneView } from '@/types/campagne';
+import { Loader2, Plus, Save, X, Eye, Users, Download } from 'lucide-react';
 import Link from 'next/link';
 import React, { useState } from 'react';
 
@@ -20,6 +20,11 @@ const AdminCampagnesComponent: React.FC<AdminCampagnesComponentProps> = ({ campa
     const [videoFile, setVideoFile] = useState<File | null>(null);
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [isSaving, setIsSaving] = useState(false);
+
+    const [viewsCampagne, setViewsCampagne] = useState<Campagne | null>(null);
+    const [views, setViews] = useState<CampagneView[]>([]);
+    const [isViewsLoading, setIsViewsLoading] = useState(false);
+    const [viewsError, setViewsError] = useState<string | null>(null);
 
     const openModal = () => {
         setFormData({ titre: '', description: '', userSaisie: '' });
@@ -75,7 +80,7 @@ const AdminCampagnesComponent: React.FC<AdminCampagnesComponentProps> = ({ campa
             body.append('userSaisie', formData.userSaisie.trim());
             body.append('video', videoFile);
 
-            const response = await fetch('/api/campagnes', {
+            const response = await fetch('/api/admin/campagnes', {
                 method: 'POST',
                 body,
             });
@@ -92,6 +97,79 @@ const AdminCampagnesComponent: React.FC<AdminCampagnesComponentProps> = ({ campa
         } finally {
             setIsSaving(false);
         }
+    };
+
+    const openViewsModal = async (campagne: Campagne) => {
+        setViewsCampagne(campagne);
+        setViews([]);
+        setViewsError(null);
+        setIsViewsLoading(true);
+
+        try {
+            const res = await fetch(`/api/campagnes/${campagne.id}/views`);
+            const data = await res.json();
+
+            if (!res.ok) {
+                throw new Error(data.error || 'Erreur lors du chargement des visionnages');
+            }
+
+            setViews(data.views || []);
+        } catch (error) {
+            setViewsError(error instanceof Error ? error.message : 'Erreur inconnue');
+        } finally {
+            setIsViewsLoading(false);
+        }
+    };
+
+    const closeViewsModal = () => {
+        setViewsCampagne(null);
+        setViews([]);
+        setViewsError(null);
+    };
+
+    const handleToggleActive = async (campagne: Campagne) => {
+        try {
+            const response = await fetch(`/api/admin/campagnes/${campagne.id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ isactif: !(campagne.isactif ?? true) }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Erreur lors de la mise à jour');
+            }
+
+            await fetchCampagnes();
+        } catch (error) {
+            console.error('Error toggling active:', error);
+        }
+    };
+
+    const exportViewsToExcel = () => {
+        if (!viewsCampagne || views.length === 0) return;
+
+        const header = ['Nom et prénom', 'Email', 'Date de visionnage'];
+        const rows = views.map((v) => [
+            v.nomPrenom,
+            v.email,
+            v.dateView ? new Date(v.dateView).toLocaleString('fr-FR') : '',
+        ]);
+
+        const csv = [header, ...rows]
+            .map((row) => row.map((field) => `"${String(field).replace(/"/g, '""')}"`).join(';'))
+            .join('\r\n');
+
+        // BOM UTF-8 pour que les accents s'affichent correctement dans Excel
+        const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        const safeTitle = viewsCampagne.titre.replace(/[^a-z0-9]+/gi, '_').toLowerCase();
+        link.download = `visionnages_${safeTitle}.csv`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
     };
 
     if (isLoading) {
@@ -125,19 +203,25 @@ const AdminCampagnesComponent: React.FC<AdminCampagnesComponentProps> = ({ campa
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ajoutée par</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Vues</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200">
                         {campagnes.length === 0 ? (
                             <tr>
-                                <td colSpan={5} className="px-6 py-12 text-center text-gray-500">
+                                <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
                                     Aucune video trouvée. Cliquez sur &quot;Ajouter une video&quot; pour commencer.
                                 </td>
                             </tr>
                         ) : (
                             campagnes.map((campagne) => (
-                                <tr key={campagne.id} className="hover:bg-gray-50 transition-colors">
+                                <tr
+                                    key={campagne.id}
+                                    onClick={() => openViewsModal(campagne)}
+                                    className="hover:bg-gray-50 transition-colors cursor-pointer"
+                                    title="Voir la liste des visionnages"
+                                >
                                     <td className="px-6 py-4">
                                         <div className="font-medium text-gray-900">{campagne.titre}</div>
                                         {campagne.description && (
@@ -148,11 +232,28 @@ const AdminCampagnesComponent: React.FC<AdminCampagnesComponentProps> = ({ campa
                                     <td className="px-6 py-4 text-sm text-gray-500">
                                         {campagne.dateSaisie ? new Date(campagne.dateSaisie).toLocaleDateString('fr-FR') : ''}
                                     </td>
-                                    <td className="px-6 py-4 text-sm text-gray-500">{campagne.viewCount ?? 0}</td>
+                                    <td className="px-6 py-4 text-sm text-gray-500">
+                                        <span className="flex items-center gap-1">
+                                            <Users size={14} />
+                                            {campagne.viewCount ?? 0}
+                                        </span>
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        <button
+                                            onClick={(e) => { e.stopPropagation(); handleToggleActive(campagne); }}
+                                            className={`px-2 py-1 text-xs rounded-full ${campagne.isactif === false
+                                                ? 'bg-gray-100 text-gray-800'
+                                                : 'bg-green-100 text-green-800'
+                                                }`}
+                                        >
+                                            {campagne.isactif === false ? 'Inactif' : 'Actif'}
+                                        </button>
+                                    </td>
                                     <td className="px-6 py-4">
                                         <Link
                                             href={`/campagnes/${campagne.id}`}
                                             target="_blank"
+                                            onClick={(e) => e.stopPropagation()}
                                             className="text-blue-600 hover:text-blue-800 p-1 hover:bg-blue-50 rounded transition-colors inline-flex"
                                             title="Voir la video"
                                         >
@@ -251,6 +352,69 @@ const AdminCampagnesComponent: React.FC<AdminCampagnesComponentProps> = ({ campa
                                         Créer
                                     </>
                                 )}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {viewsCampagne && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={closeViewsModal}>
+                    <div className="bg-white rounded-xl shadow-2xl max-w-3xl w-full max-h-[85vh] overflow-hidden flex flex-col" onClick={(e) => e.stopPropagation()}>
+                        <div className="px-6 py-4 border-b flex items-center text-gray-700 justify-between bg-linear-to-r from-blue-50 to-white">
+                            <div>
+                                <h2 className="text-xl font-semibold">Visionnages</h2>
+                                <p className="text-sm text-gray-500">{viewsCampagne.titre}</p>
+                            </div>
+                            <button onClick={closeViewsModal} className="text-gray-400 hover:text-gray-600 transition-colors">
+                                <X size={24} />
+                            </button>
+                        </div>
+
+                        <div className="flex-1 overflow-y-auto p-6">
+                            {isViewsLoading ? (
+                                <div className="flex items-center justify-center py-12">
+                                    <Loader2 size={32} className="text-blue-600 animate-spin" />
+                                </div>
+                            ) : viewsError ? (
+                                <p className="text-sm text-red-600">{viewsError}</p>
+                            ) : views.length === 0 ? (
+                                <p className="text-center text-gray-500 py-12">Cette vidéo n&apos;a pas encore été visionnée.</p>
+                            ) : (
+                                <table className="w-full">
+                                    <thead className="bg-gray-50 border-b sticky top-0">
+                                        <tr>
+                                            <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nom et prénom</th>
+                                            <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                                            <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date de visionnage</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-gray-200">
+                                        {views.map((view) => (
+                                            <tr key={view.id}>
+                                                <td className="px-4 py-2 text-sm text-gray-900">{view.nomPrenom}</td>
+                                                <td className="px-4 py-2 text-sm text-gray-500">{view.email}</td>
+                                                <td className="px-4 py-2 text-sm text-gray-500">
+                                                    {view.dateView ? new Date(view.dateView).toLocaleString('fr-FR') : ''}
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            )}
+                        </div>
+
+                        <div className="px-6 py-4 border-t bg-gray-50 flex items-center justify-between">
+                            <p className="text-sm text-gray-500">
+                                {views.length} visionnage{views.length > 1 ? 's' : ''}
+                            </p>
+                            <button
+                                onClick={exportViewsToExcel}
+                                disabled={views.length === 0}
+                                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center gap-2"
+                            >
+                                <Download size={16} />
+                                Exporter en Excel
                             </button>
                         </div>
                     </div>

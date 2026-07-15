@@ -14,7 +14,7 @@ const CampagnesAdminPage: React.FC = () => {
     const fetchCampagnes = async () => {
         try {
             setIsLoading(true);
-            const res = await fetch('/api/campagnes');
+            const res = await fetch('/api/admin/campagnes');
             const data = await res.json();
             setCampagnes(data.campagnes || []);
         } catch (error) {

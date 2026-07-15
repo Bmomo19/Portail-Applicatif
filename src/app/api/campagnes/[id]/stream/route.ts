@@ -28,11 +28,11 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         }
 
         const [campagneRows] = await pool.execute<RowDataPacket[]>(
-            'SELECT videoPath FROM t_campagne_com WHERE id = ?',
+            'SELECT videoPath, isactif FROM t_campagne_com WHERE id = ?',
             [id]
         );
 
-        if (campagneRows.length === 0) {
+        if (campagneRows.length === 0 || campagneRows[0].isactif === 0) {
             return NextResponse.json({ error: 'Campagne non trouvée' }, { status: 404 });
         }
 

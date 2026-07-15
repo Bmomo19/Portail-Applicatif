@@ -10,7 +10,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         const query = `
             SELECT id, titre, description, userSaisie, dateSaisie, userModif, dateModif
             FROM t_campagne_com
-            WHERE id = ?
+            WHERE id = ? AND (isactif = 1 OR isactif IS NULL)
         `;
 
         const [rows] = await pool.execute<RowDataPacket[]>(query, [id]);
