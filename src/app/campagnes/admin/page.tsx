@@ -18,7 +18,7 @@ const CampagnesAdminPage: React.FC = () => {
             const data = await res.json();
             setCampagnes(data.campagnes || []);
         } catch (error) {
-            console.error('Error fetching campagnes:', error);
+            console.error('Error fetching videos:', error);
         } finally {
             setIsLoading(false);
         }

@@ -106,14 +106,14 @@ const AdminCampagnesComponent: React.FC<AdminCampagnesComponentProps> = ({ campa
         <div className="container mx-auto px-4 py-8">
             <div className="flex justify-between items-center mb-8">
                 <div>
-                    <h1 className="text-4xl font-bold text-gray-800 mb-4">Gestion des Campagnes</h1>
+                    <h1 className="text-4xl font-bold text-gray-800 mb-4">Gestion des videos</h1>
                     <p className="mt-1 text-xl text-gray-600">
-                        {campagnes.length} campagne{campagnes.length > 1 ? 's' : ''} au total
+                        {campagnes.length} video{campagnes.length > 1 ? 's' : ''} au total
                     </p>
                 </div>
                 <button onClick={openModal} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2 transition-colors">
                     <Plus size={20} />
-                    Ajouter une campagne
+                    Ajouter une video
                 </button>
             </div>
 
@@ -132,7 +132,7 @@ const AdminCampagnesComponent: React.FC<AdminCampagnesComponentProps> = ({ campa
                         {campagnes.length === 0 ? (
                             <tr>
                                 <td colSpan={5} className="px-6 py-12 text-center text-gray-500">
-                                    Aucune campagne trouvée. Cliquez sur &quot;Ajouter une campagne&quot; pour commencer.
+                                    Aucune video trouvée. Cliquez sur &quot;Ajouter une video&quot; pour commencer.
                                 </td>
                             </tr>
                         ) : (
@@ -154,7 +154,7 @@ const AdminCampagnesComponent: React.FC<AdminCampagnesComponentProps> = ({ campa
                                             href={`/campagnes/${campagne.id}`}
                                             target="_blank"
                                             className="text-blue-600 hover:text-blue-800 p-1 hover:bg-blue-50 rounded transition-colors inline-flex"
-                                            title="Voir la campagne"
+                                            title="Voir la video"
                                         >
                                             <Eye size={18} />
                                         </Link>
@@ -170,7 +170,7 @@ const AdminCampagnesComponent: React.FC<AdminCampagnesComponentProps> = ({ campa
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
                     <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col" onClick={(e) => e.stopPropagation()}>
                         <div className="px-6 py-4 border-b flex items-center text-gray-700 justify-between bg-linear-to-r from-blue-50 to-white">
-                            <h2 className="text-xl font-semibold">Nouvelle campagne</h2>
+                            <h2 className="text-xl font-semibold">Nouvelle video</h2>
                             <button onClick={closeModal} className="text-gray-400 hover:text-gray-600 transition-colors" disabled={isSaving}>
                                 <X size={24} />
                             </button>

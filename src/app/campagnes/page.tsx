@@ -91,7 +91,7 @@ export default function CampagnesPage() {
                         onClick={fetchCampagnes}
                         className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors disabled:opacity-50"
                         disabled={isLoading}
-                        aria-label="Actualiser les campagnes"
+                        aria-label="Actualiser les videos"
                     >
                         <RefreshCw className={`w-5 h-5 ${isLoading ? 'animate-spin' : ''}`} />
                         <span>Actualiser</span>
@@ -100,7 +100,7 @@ export default function CampagnesPage() {
                         <button
                             onClick={() => router.push('/campagnes/admin')}
                             className={`p-2 rounded transition-colors bg-blue-500 text-white`}
-                            aria-label="Administration des campagnes"
+                            aria-label="Administration des videos"
                         >
                             <Settings />
                         </button>
@@ -116,7 +116,7 @@ export default function CampagnesPage() {
                     </div>
                 ) : filteredCampagnes.length === 0 ? (
                     <div className="text-center py-12 text-gray-500">
-                        Aucune campagne trouvée
+                        Aucune video trouvée
                     </div>
                 ) : (
                     <div className={`grid gap-6 ${viewMode === 'grid'
