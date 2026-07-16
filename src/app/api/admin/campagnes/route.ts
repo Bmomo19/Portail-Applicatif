@@ -21,7 +21,7 @@ export async function GET() {
                 c.dateSaisie,
                 c.userModif,
                 c.dateModif,
-                COUNT(v.id) as viewCount
+                CAST(COALESCE(SUM(v.nbVue), 0) AS UNSIGNED) as viewCount
             FROM t_campagne_com c
             LEFT JOIN t_campagne_view v ON v.videoId = c.id
             GROUP BY c.id
@@ -30,7 +30,11 @@ export async function GET() {
 
         const [rows] = await pool.execute<RowDataPacket[]>(query);
 
-        return NextResponse.json({ campagnes: rows });
+        // MySQL renvoie isactif (TINYINT) comme un nombre (0/1) : on le convertit
+        // en booléen JS pour que le champ corresponde au type Campagne.isactif.
+        const campagnes = rows.map((row) => ({ ...row, isactif: Boolean(row.isactif) }));
+
+        return NextResponse.json({ campagnes });
     } catch (error) {
         console.error('Erreur lors de la récupération des campagnes:', error);
         return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });

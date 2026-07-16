@@ -14,7 +14,7 @@ export async function GET() {
                 c.dateSaisie,
                 c.userModif,
                 c.dateModif,
-                COUNT(v.id) as viewCount
+                CAST(COALESCE(SUM(v.nbVue), 0) AS UNSIGNED) as viewCount
             FROM t_campagne_com c
             LEFT JOIN t_campagne_view v ON v.videoId = c.id
             WHERE c.isactif = 1 OR c.isactif IS NULL

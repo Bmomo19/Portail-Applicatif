@@ -148,10 +148,11 @@ const AdminCampagnesComponent: React.FC<AdminCampagnesComponentProps> = ({ campa
     const exportViewsToExcel = () => {
         if (!viewsCampagne || views.length === 0) return;
 
-        const header = ['Nom et prénom', 'Email', 'Date de visionnage'];
+        const header = ['Nom et prénom', 'Email', 'Nb vues', 'Dernier visionnage'];
         const rows = views.map((v) => [
             v.nomPrenom,
             v.email,
+            v.nbVue ?? 1,
             v.dateView ? new Date(v.dateView).toLocaleString('fr-FR') : '',
         ]);
 
@@ -241,12 +242,12 @@ const AdminCampagnesComponent: React.FC<AdminCampagnesComponentProps> = ({ campa
                                     <td className="px-6 py-4">
                                         <button
                                             onClick={(e) => { e.stopPropagation(); handleToggleActive(campagne); }}
-                                            className={`px-2 py-1 text-xs rounded-full ${campagne.isactif === false
+                                            className={`px-2 py-1 text-xs rounded-full ${!campagne.isactif
                                                 ? 'bg-gray-100 text-gray-800'
                                                 : 'bg-green-100 text-green-800'
                                                 }`}
                                         >
-                                            {campagne.isactif === false ? 'Inactif' : 'Actif'}
+                                            {!campagne.isactif ? 'Inactif' : 'Actif'}
                                         </button>
                                     </td>
                                     <td className="px-6 py-4">
@@ -386,7 +387,8 @@ const AdminCampagnesComponent: React.FC<AdminCampagnesComponentProps> = ({ campa
                                         <tr>
                                             <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nom et prénom</th>
                                             <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                                            <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date de visionnage</th>
+                                            <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nb vues</th>
+                                            <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dernier visionnage</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-gray-200">
@@ -394,6 +396,7 @@ const AdminCampagnesComponent: React.FC<AdminCampagnesComponentProps> = ({ campa
                                             <tr key={view.id}>
                                                 <td className="px-4 py-2 text-sm text-gray-900">{view.nomPrenom}</td>
                                                 <td className="px-4 py-2 text-sm text-gray-500">{view.email}</td>
+                                                <td className="px-4 py-2 text-sm text-gray-500">{view.nbVue ?? 1}</td>
                                                 <td className="px-4 py-2 text-sm text-gray-500">
                                                     {view.dateView ? new Date(view.dateView).toLocaleString('fr-FR') : ''}
                                                 </td>

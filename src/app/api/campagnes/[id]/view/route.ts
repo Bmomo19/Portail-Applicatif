@@ -29,12 +29,31 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
             return NextResponse.json({ error: 'Campagne non trouvée' }, { status: 404 });
         }
 
-        const [result] = await pool.execute<ResultSetHeader>(
-            'INSERT INTO t_campagne_view (videoId, nomPrenom, email, dateView) VALUES (?, ?, ?, NOW())',
-            [id, nomPrenom, email]
+        const emailNormalized = email.toLowerCase();
+
+        // Un même email qui revoit une vidéo n'ajoute pas de ligne : on incrémente son compteur
+        const [existingRows] = await pool.execute<RowDataPacket[]>(
+            'SELECT id FROM t_campagne_view WHERE videoId = ? AND email = ?',
+            [id, emailNormalized]
         );
 
-        return NextResponse.json({ viewId: result.insertId }, { status: 201 });
+        let viewId: number;
+
+        if (existingRows.length > 0) {
+            viewId = existingRows[0].id;
+            await pool.execute(
+                'UPDATE t_campagne_view SET nbVue = nbVue + 1, nomPrenom = ?, dateView = NOW() WHERE id = ?',
+                [nomPrenom, viewId]
+            );
+        } else {
+            const [result] = await pool.execute<ResultSetHeader>(
+                'INSERT INTO t_campagne_view (videoId, nomPrenom, email, dateView) VALUES (?, ?, ?, NOW())',
+                [id, nomPrenom, emailNormalized]
+            );
+            viewId = result.insertId;
+        }
+
+        return NextResponse.json({ viewId }, { status: 201 });
     } catch (error) {
         console.error('Erreur lors de l\'enregistrement de la vue:', error);
         return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });

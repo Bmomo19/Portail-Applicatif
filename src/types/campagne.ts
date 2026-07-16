@@ -15,5 +15,6 @@ export interface CampagneView {
   videoId: number;
   nomPrenom: string;
   email: string;
+  nbVue?: number;
   dateView?: Date;
 }

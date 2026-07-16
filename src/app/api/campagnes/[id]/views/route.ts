@@ -17,7 +17,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         }
 
         const [views] = await pool.execute<RowDataPacket[]>(
-            'SELECT id, nomPrenom, email, dateView FROM t_campagne_view WHERE videoId = ? ORDER BY dateView DESC',
+            'SELECT id, nomPrenom, email, nbVue, dateView FROM t_campagne_view WHERE videoId = ? ORDER BY dateView DESC',
             [id]
         );
 
