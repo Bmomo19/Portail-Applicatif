@@ -8,7 +8,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         const { id } = await params;
 
         const query = `
-            SELECT id, titre, description, userSaisie, dateSaisie, userModif, dateModif
+            SELECT id, titre, description, telechargementAutorise, userSaisie, dateSaisie, userModif, dateModif
             FROM t_campagne_com
             WHERE id = ? AND (isactif = 1 OR isactif IS NULL)
         `;
@@ -19,7 +19,9 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
             return NextResponse.json({ error: 'Campagne non trouvée' }, { status: 404 });
         }
 
-        return NextResponse.json({ campagne: rows[0] });
+        const campagne = { ...rows[0], telechargementAutorise: Boolean(rows[0].telechargementAutorise) };
+
+        return NextResponse.json({ campagne });
     } catch (error) {
         console.error('Erreur:', error);
         return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 });

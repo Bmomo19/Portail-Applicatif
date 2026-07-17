@@ -2,19 +2,35 @@ import pool from '@/lib/db';
 import { ResultSetHeader } from 'mysql2';
 import { NextRequest, NextResponse } from 'next/server';
 
-// PUT - Active/désactive une campagne (masque/affiche du portail public sans la supprimer)
+// PUT - Met à jour l'état d'une campagne (isactif et/ou telechargementAutorise)
 export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
         const { id } = await params;
         const body = await request.json();
 
-        if (typeof body.isactif !== 'boolean') {
-            return NextResponse.json({ error: 'isactif (booléen) est requis' }, { status: 400 });
+        const fields: string[] = [];
+        const values: number[] = [];
+
+        if (typeof body.isactif === 'boolean') {
+            fields.push('isactif = ?');
+            values.push(body.isactif ? 1 : 0);
+        }
+
+        if (typeof body.telechargementAutorise === 'boolean') {
+            fields.push('telechargementAutorise = ?');
+            values.push(body.telechargementAutorise ? 1 : 0);
+        }
+
+        if (fields.length === 0) {
+            return NextResponse.json(
+                { error: 'isactif et/ou telechargementAutorise (booléen) sont requis' },
+                { status: 400 }
+            );
         }
 
         const [result] = await pool.execute<ResultSetHeader>(
-            'UPDATE t_campagne_com SET isactif = ? WHERE id = ?',
-            [body.isactif ? 1 : 0, id]
+            `UPDATE t_campagne_com SET ${fields.join(', ')} WHERE id = ?`,
+            [...values, id]
         );
 
         if (result.affectedRows === 0) {

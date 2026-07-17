@@ -2,8 +2,8 @@
 
 import { Campagne, CampagneView } from '@/types/campagne';
 import { Loader2, Plus, Save, X, Eye, Users, Download } from 'lucide-react';
-import Link from 'next/link';
 import React, { useState } from 'react';
+import ExcelJS from 'exceljs';
 
 interface AdminCampagnesComponentProps {
     campagnes: Campagne[];
@@ -145,28 +145,56 @@ const AdminCampagnesComponent: React.FC<AdminCampagnesComponentProps> = ({ campa
         }
     };
 
-    const exportViewsToExcel = () => {
+    const handleToggleDownload = async (campagne: Campagne) => {
+        try {
+            const response = await fetch(`/api/admin/campagnes/${campagne.id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ telechargementAutorise: !(campagne.telechargementAutorise ?? true) }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Erreur lors de la mise à jour');
+            }
+
+            await fetchCampagnes();
+        } catch (error) {
+            console.error('Error toggling download:', error);
+        }
+    };
+
+    const exportViewsToExcel = async () => {
         if (!viewsCampagne || views.length === 0) return;
 
-        const header = ['Nom et prénom', 'Email', 'Nb vues', 'Dernier visionnage'];
-        const rows = views.map((v) => [
-            v.nomPrenom,
-            v.email,
-            v.nbVue ?? 1,
-            v.dateView ? new Date(v.dateView).toLocaleString('fr-FR') : '',
-        ]);
+        const workbook = new ExcelJS.Workbook();
+        const sheet = workbook.addWorksheet('Visionnages');
 
-        const csv = [header, ...rows]
-            .map((row) => row.map((field) => `"${String(field).replace(/"/g, '""')}"`).join(';'))
-            .join('\r\n');
+        sheet.columns = [
+            { header: 'Nom et prénom', key: 'nomPrenom', width: 30 },
+            { header: 'Email', key: 'email', width: 30 },
+            { header: 'Nb vues', key: 'nbVue', width: 10 },
+            { header: 'Dernier visionnage', key: 'dateView', width: 22 },
+        ];
+        sheet.getRow(1).font = { bold: true };
 
-        // BOM UTF-8 pour que les accents s'affichent correctement dans Excel
-        const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
+        views.forEach((v) => {
+            sheet.addRow({
+                nomPrenom: v.nomPrenom,
+                email: v.email,
+                nbVue: v.nbVue ?? 1,
+                dateView: v.dateView ? new Date(v.dateView).toLocaleString('fr-FR') : '',
+            });
+        });
+
+        const buffer = await workbook.xlsx.writeBuffer();
+        const blob = new Blob([buffer], {
+            type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        });
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
         const safeTitle = viewsCampagne.titre.replace(/[^a-z0-9]+/gi, '_').toLowerCase();
-        link.download = `visionnages_${safeTitle}.csv`;
+        link.download = `visionnages_${safeTitle}.xlsx`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -205,13 +233,14 @@ const AdminCampagnesComponent: React.FC<AdminCampagnesComponentProps> = ({ campa
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Vues</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Téléchargement</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200">
                         {campagnes.length === 0 ? (
                             <tr>
-                                <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
+                                <td colSpan={7} className="px-6 py-12 text-center text-gray-500">
                                     Aucune video trouvée. Cliquez sur &quot;Ajouter une video&quot; pour commencer.
                                 </td>
                             </tr>
@@ -242,6 +271,7 @@ const AdminCampagnesComponent: React.FC<AdminCampagnesComponentProps> = ({ campa
                                     <td className="px-6 py-4">
                                         <button
                                             onClick={(e) => { e.stopPropagation(); handleToggleActive(campagne); }}
+                                            title={!campagne.isactif ? 'Cliquer pour activer' : 'Cliquer pour désactiver'}
                                             className={`px-2 py-1 text-xs rounded-full ${!campagne.isactif
                                                 ? 'bg-gray-100 text-gray-800'
                                                 : 'bg-green-100 text-green-800'
@@ -251,15 +281,25 @@ const AdminCampagnesComponent: React.FC<AdminCampagnesComponentProps> = ({ campa
                                         </button>
                                     </td>
                                     <td className="px-6 py-4">
-                                        <Link
-                                            href={`/campagnes/${campagne.id}`}
-                                            target="_blank"
-                                            onClick={(e) => e.stopPropagation()}
+                                        <button
+                                            onClick={(e) => { e.stopPropagation(); handleToggleDownload(campagne); }}
+                                            title={!campagne.telechargementAutorise ? 'Cliquer pour autoriser le téléchargement' : 'Cliquer pour bloquer le téléchargement'}
+                                            className={`px-2 py-1 text-xs rounded-full ${!campagne.telechargementAutorise
+                                                ? 'bg-gray-100 text-gray-800'
+                                                : 'bg-green-100 text-green-800'
+                                                }`}
+                                        >
+                                            {!campagne.telechargementAutorise ? 'Bloqué' : 'Autorisé'}
+                                        </button>
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        <button
+                                            onClick={(e) => { e.stopPropagation(); openViewsModal(campagne); }}
                                             className="text-blue-600 hover:text-blue-800 p-1 hover:bg-blue-50 rounded transition-colors inline-flex"
-                                            title="Voir la video"
+                                            title="Voir la liste des visionnages"
                                         >
                                             <Eye size={18} />
-                                        </Link>
+                                        </button>
                                     </td>
                                 </tr>
                             ))

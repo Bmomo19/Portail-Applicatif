@@ -194,6 +194,8 @@ export default function CampagneViewerPage() {
                     <video
                         controls
                         autoPlay
+                        controlsList={!campagne.telechargementAutorise ? 'nodownload' : undefined}
+                        onContextMenu={(e) => { if (!campagne.telechargementAutorise) e.preventDefault(); }}
                         className="w-full max-w-4xl max-h-[75vh] rounded-lg shadow-lg bg-black"
                         src={`/api/campagnes/${params.id}/stream?viewId=${viewId}`}
                     />

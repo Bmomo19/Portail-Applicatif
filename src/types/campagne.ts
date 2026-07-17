@@ -3,6 +3,7 @@ export interface Campagne {
   titre: string;
   description: string | null;
   isactif?: boolean;
+  telechargementAutorise?: boolean;
   userSaisie?: string | null;
   dateSaisie?: Date;
   userModif?: string | null;

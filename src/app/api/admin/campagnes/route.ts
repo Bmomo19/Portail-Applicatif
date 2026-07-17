@@ -17,6 +17,7 @@ export async function GET() {
                 c.titre,
                 c.description,
                 c.isactif,
+                c.telechargementAutorise,
                 c.userSaisie,
                 c.dateSaisie,
                 c.userModif,
@@ -30,9 +31,13 @@ export async function GET() {
 
         const [rows] = await pool.execute<RowDataPacket[]>(query);
 
-        // MySQL renvoie isactif (TINYINT) comme un nombre (0/1) : on le convertit
-        // en booléen JS pour que le champ corresponde au type Campagne.isactif.
-        const campagnes = rows.map((row) => ({ ...row, isactif: Boolean(row.isactif) }));
+        // MySQL renvoie les TINYINT comme des nombres (0/1) : on les convertit
+        // en booléens JS pour correspondre au type Campagne.
+        const campagnes = rows.map((row) => ({
+            ...row,
+            isactif: Boolean(row.isactif),
+            telechargementAutorise: Boolean(row.telechargementAutorise),
+        }));
 
         return NextResponse.json({ campagnes });
     } catch (error) {
