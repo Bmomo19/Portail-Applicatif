@@ -127,7 +127,7 @@ export default function CampagneViewerPage() {
                         <form onSubmit={handleSubmit} className="space-y-4">
                             {formError && (
                                 <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg flex items-center">
-                                    <AlertCircle className="w-5 h-5 mr-2 flex-shrink-0" />
+                                    <AlertCircle className="w-5 h-5 mr-2 shrink-0" />
                                     <span>{formError}</span>
                                 </div>
                             )}
